@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@plugin "daisyui";
+/* Modal styling */
+.modal {
+    background-color: white;
+    padding: 20px;
+   
+}  
