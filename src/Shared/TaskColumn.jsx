@@ -1,17 +1,33 @@
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { Droppable } from "@hello-pangea/dnd";
 import TaskItem from "./TaskItem";
 
-const TaskColumn = ({ categorize, icon, tasks }) => {
+const TaskColumn = ({ id, categorize, icon, tasks,refetch }) => {
     return (
-        <div className="bg-gray-100 p-4 rounded-lg shadow-md flex-1">
-            <h2 className="flex items-center gap-2 text-lg font-semibold mb-3">
-                {icon} {categorize}
-            </h2>
-            <SortableContext items={tasks.map((task) => task._id)} strategy={verticalListSortingStrategy}>
-                {tasks.map((task) => (
-                    <TaskItem key={task._id} task={task} />
-                ))}
-            </SortableContext>
+        <div className="card bg-base-100 w-96 shadow-xl">
+            <div className="card-body">
+                <h2 className="flex items-center gap-2 text-lg font-semibold mb-3">
+                    {icon} {categorize}
+                </h2>
+
+                <Droppable droppableId={id}>
+                    {(provided, snapshot) => (
+                        <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className="drop-zone"
+                            style={{
+                                minHeight: 200,
+                                background: snapshot.isDraggingOver ? "#f3f4f6" : "transparent",
+                            }}
+                        >
+                            {tasks.map((task, index) => (
+                                <TaskItem key={task._id} task={task} index={index} refetch={refetch} />
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </div>
         </div>
     );
 };
