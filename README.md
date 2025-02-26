@@ -1,7 +1,8 @@
 # Task Management Application
+### Task Mart
 
-## 🚀 Live Demo
-[Live App](#) (Replace with actual deployed link)
+## 🚀 Live Website Link
+[Live Link](https://task--mangement-app.web.app/) 
 
 ## 📜 Description
 This is a **Task Management Application** where users can add, edit, delete, and reorder tasks using a **drag-and-drop** interface. The tasks are categorized into three sections: **To-Do, In Progress, and Done**. Changes are saved instantly to the database, ensuring real-time updates.
@@ -39,26 +40,6 @@ This is a **Task Management Application** where users can add, edit, delete, and
 - MongoDB (Mongoose ORM)
 - WebSockets (`socket.io`) for real-time updates
 
-## 📂 Folder Structure
-```
-├── backend/
-│   ├── models/
-│   ├── routes/
-│   ├── server.js
-│   ├── .env
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── App.js
-│   │   ├── main.jsx
-│   ├── public/
-│
-├── README.md
-├── package.json
-```
-
 ## ⚙️ Installation Steps
 
 ### 1️⃣ Clone the Repository
@@ -79,15 +60,6 @@ cd backend
 npm install
 ```
 
-### 3️⃣ Setup Environment Variables
-Create a `.env` file inside the **backend** folder and add:
-```
-MONGO_URI=your_mongodb_connection_string
-PORT=5000
-FIREBASE_API_KEY=your_firebase_api_key
-JWT_SECRET=your_jwt_secret
-```
-
 ### 4️⃣ Start the Application
 #### Backend:
 ```sh
@@ -99,22 +71,5 @@ npm start
 cd frontend
 npm run dev
 ```
-
-## 📌 API Endpoints
-| Method | Endpoint        | Description                    |
-|--------|----------------|--------------------------------|
-| POST   | /tasks         | Add a new task                 |
-| GET    | /tasks         | Get all tasks for a user       |
-| PUT    | /tasks/:id     | Update task details            |
-| DELETE | /tasks/:id     | Delete a task                  |
-
-## 📝 Notes
-- Ensure MongoDB is running before starting the backend.
-- Make sure the `.env` file contains correct Firebase and MongoDB credentials.
-- For real-time updates, ensure WebSockets are properly configured.
-
-## 📜 License
-This project is open-source and available under the [MIT License](LICENSE).
-
 ---
 Feel free to update the README with additional details based on your implementation. 🚀

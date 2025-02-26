@@ -26,7 +26,7 @@ const Input = ({ refetch }) => {
 
         // Validation for Title
         if (title.length < 3) {
-            return toast.error("Task title must be at least 3 characters.");
+            return toast.error("Task  title must be at least 3 characters.");
         }
         if (title.length > 50) {
             return toast.error("Task title must not exceed 50 characters.");
