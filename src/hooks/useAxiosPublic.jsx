@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const axiosPublic= axios.create({
-    baseURL:'https://task-manager-server-liard.vercel.app'
+    baseURL:'https://task-mart-server-web.vercel.app'
 })
 
 const useAxiosPublic = () => {

@@ -1,123 +1,210 @@
+
+
 import { Draggable } from "@hello-pangea/dnd";
 import Swal from "sweetalert2";
-import useAxiosPublic from "../hooks/useAxiosPublic";
-import { useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
+import useAxiosPublic from "../hooks/useAxiosPublic";
 
-const TaskItem = ({ task, index ,refetch}) => {
-    const axiosPublic=useAxiosPublic();
-    const [isEditing, setIsEditing] = useState(false);
+import { useState } from "react";
+import EditTaskModal from "./EditTaskModal";
 
-    const handleDelete = (id) => {
+
+
+const TaskItem = ({ task, index, refetch }) => {
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const axiosPublic = useAxiosPublic();
+    const handleDelete = async (id) => {
         Swal.fire({
             title: "Are you sure?",
-            text: "You won't be able to revert this Task!",
+            text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Delete",
         }).then(async (result) => {
             if (result.isConfirmed) {
-                try {
-                    await axiosPublic.delete(`/tasks/${id}`);
-                     refetch();
-                    Swal.fire("Deleted!", "Task has been deleted.", "success");
-                } catch (error) {
-                    console.error('Error deleting Task:', error);
-                    Swal.fire("Error!", "There was an issue deleting your Task.", "error");
-                }
+                await axiosPublic.delete(`/tasks/${id}`);
+                refetch();
+                Swal.fire("Deleted!", "Task has been deleted.", "success");
             }
         });
     };
-
-    const handleEdit = (id) => {
-        setIsEditing(true);
-    };
-
 
 
 
     return (
         <>
-          <Draggable draggableId={task._id} index={index}>
-            {(provided, snapshot) => (
-                <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className={`bg-white p-3 rounded-lg shadow-md mb-2 cursor-pointer ${
-                        snapshot.isDragging ? "opacity-50" : ""
-                    }`}
-                >
-                    <div className="md:flex justify-between items-center">
+            <Draggable draggableId={task._id} index={index}>
+                {(provided) => (
+                    <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className="task-item flex justify-between items-center p-2 shadow-lg rounded bg-white"
+                    >
                         <div>
-                            <h3 className="font-medium">{task.title}</h3>
-                            <p className="text-gray-600 text-sm">{task.description}</p>
-                           <div className="flex justify-between gap-2.5 my-2">
-                             <p className="text-gray-400 text-xs">
-                                Created:{" "}
-                                {new Date(task.timestamp).toLocaleDateString("en-GB", {
-                                    day: "2-digit",
-                                    month: "long",
-                                    year: "numeric",
-                                })}
-                            </p>
-                            <div className="flex gap-x-2">
-                                <button onClick={()=>handleDelete(task._id)} className=" text-red-500 text-lg"> <MdDelete></MdDelete></button>
-                                <button onClick={()=>handleEdit(task._id)} className=" text-blue-500 text-lg"><MdEdit /></button>
-                            </div>
-                           </div>
+                            <h3 className="font-bold">{task.title}</h3>
+                            <p className="text-sm">{task.description}</p>
                         </div>
-                    </div>
-                </div>
-            )}
-        </Draggable>
-           {/* Custom Modal for Editing Task */}
-           {isEditing && (
-                <div className="fixed inset-0 z-50 bg-white bg-opacity-70 backdrop-blur-sm flex justify-center items-center">
-                    <div className="relative bg-white p-6 rounded-lg shadow-xl w-full max-w-lg text-black">
-                        <button onClick={() => setIsEditing(false)} className="absolute top-2 right-2 text-3xl">
-                            &times;
-                        </button>
-
-                        <h2 className="text-2xl font-bold mb-4">Edit Task</h2>
-
-                         {/* Task Title */}
-                <div>
-                    <label className="block text-gray-700 font-semibold">Title <span className="text-red-500">*</span></label>
-                    <input
-                        type="text"
-                        className="w-full border rounded-lg p-2 mt-1"
-                    />
-                </div>
-
-                {/* Task Description */}
-                <div>
-                    <label className="block text-gray-700 font-semibold">Description</label>
-                    <textarea
-                        className="w-full border rounded-lg p-2 mt-1"  
-                    ></textarea>
-                   
-                </div>
-
-                        <div className="flex justify-end gap-4">
-                            <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
-                                Save
-                            </button>
-                            <button onClick={() => setIsEditing(false)} className="bg-red-500 text-white px-4 py-2 rounded">
-                                Cancel
+                        <div className="flex gap-2">
+                            <button onClick={() => setIsEditOpen(true)} className="btn-edit">✏️</button>
+                            <button onClick={() => handleDelete(task._id)} className="text-red-500">
+                                <MdDelete size={20} />
                             </button>
                         </div>
                     </div>
-                </div>
-            )}
-
-
+                )}
+            </Draggable>
+            <EditTaskModal
+                task={task}
+                isOpen={isEditOpen}
+                onClose={() => setIsEditOpen(false)}
+                refetch={refetch}
+            />
         </>
-      
-        
+
     );
 };
 
 export default TaskItem;
+
+
+
+// import { useState } from "react";
+// import Swal from "sweetalert2";
+// import { Draggable } from "@hello-pangea/dnd";
+// import { MdDelete, MdEdit } from "react-icons/md";
+// import useAxiosPublic from "../hooks/useAxiosPublic";
+// import toast from "react-hot-toast";
+
+
+// const TaskItem = ({ task, index, refetch }) => {
+//   const axiosPublic = useAxiosPublic();
+//   const [tasks, setTasks] = useState([]);
+//   const [showUpdateModal, setShowUpdateModal] = useState(false);
+//   const [selectedTask, setSelectedTask] = useState(null);
+//   const [updatedTask, setUpdatedTask] = useState({});
+
+//   const handleDelete = async (id) => {
+//     const result = await Swal.fire({
+//       title: "Are you sure?",
+//       text: "You won't be able to revert this!",
+//       icon: "warning",
+//       showCancelButton: true,
+//       confirmButtonText: "Yes, delete it!",
+//       cancelButtonText: "Cancel",
+//       reverseButtons: true,
+//     });
+
+//     if (result.isConfirmed) {
+//       try {
+//         await axiosPublic.delete(`/tasks/${id}`);
+//         refetch();
+//         Swal.fire("Deleted!", "Task has been deleted.", "success");
+//       } catch (error) {
+//         Swal.fire("Error!", "There was an issue deleting your Task.", "error");
+//       }
+//     }
+//   };
+//   const handleUpdateClick = (task) => {
+//     setSelectedTask(task);
+//     setUpdatedTask({
+//       title: task.title,
+//       description: task.description,
+//     });
+//     setShowUpdateModal(true);
+//   };
+
+// const handleUpdateSubmit = (e) => {
+//     e.preventDefault();
+//     axiosPublic
+//       .put(`/tasks/${selectedTask._id}`, updatedTask)
+//       .then((response) => {
+//         setTasks(
+//           tasks.map((m) =>
+//             m._id === selectedTask._id ? { ...m, ...updatedTask } : m
+//           )
+//         );
+//         setShowUpdateModal(false);
+//         toast.success("Task updated successfully!");
+//       })
+//       .catch((error) => {
+//         console.error("Error updating Task:", error);
+//         toast.error("Failed to update Task.");
+//       });
+//   };
+
+//   return (
+//     <>
+//       <Draggable draggableId={task._id} index={index}>
+//         {(provided, snapshot) => (
+//           <div
+//             ref={provided.innerRef}
+//             {...provided.draggableProps}
+//             {...provided.dragHandleProps}
+//             className={`bg-white p-3 rounded-lg shadow-md mb-2 cursor-pointer ${snapshot.isDragging ? "opacity-50" : ""}`}
+//           >
+//             <h3>{task.title}</h3>
+//             <p>{task.description}</p>
+//             <button  onClick={() => handleUpdateClick(task)}
+//                   className="text-blue-500 hover:underline mx-2">
+//               <MdEdit  />
+//             </button>
+//             <button onClick={() => handleDelete(task._id)}>
+//               <MdDelete className="text-lg text-red-500" />
+//             </button>
+//           </div>
+//         )}
+//       </Draggable>
+
+//       {showUpdateModal && (
+//         <div className="modal modal-open">
+//           <div className="modal-box">
+//             <h3 className="font-bold text-lg">Update Task</h3>
+//             <form onSubmit={handleUpdateSubmit}>
+//               <div className="form-control mb-4">
+//                 <label className="label">Title</label>
+//                 <input
+//                   type="text"
+//                   className="input input-bordered"
+//                   value={updatedTask.title}
+//                   onChange={(e) =>
+//                     setUpdatedTask({ ...updatedTask, title: e.target.value })
+//                   }
+//                   required
+//                 />
+//               </div>
+//               <div className="form-control mb-4">
+//                 <label className="label">Description</label>
+//                 <input
+//                   type="text"
+//                   className="input input-bordered"
+//                   value={updatedTask.description}
+//                   onChange={(e) =>
+//                     setUpdatedTask({ ...updatedTask, description: e.target.value })
+//                   }
+//                   required
+//                 />
+//               </div>
+//               <div className="modal-action">
+//                 <button type="button" className="btn" onClick={() => setShowUpdateModal(false)}>
+//                   Close
+//                 </button>
+//                 <button type="submit" className="btn btn-primary">
+//                   Save Changes
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default TaskItem;
+
+
+
+
